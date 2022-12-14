@@ -498,7 +498,23 @@ class Thread:
                 view.add_item(discord.ui.Button(label="Log link", url=log_url, style=discord.ButtonStyle.url))
             else:
                 view = None
-            tasks.append(self.bot.log_channel.send(embed=embed, view=view))
+            
+            log_resp = []
+            for message_data in log_data["messages"]:
+                log_resp.append(
+                    f"{message_data['author']['name']}#{message_data['author']['discriminator']}: {message_data['content']}"
+                )
+
+            tasks.append(
+                self.bot.log_channel.send(
+                    embed=embed, 
+                    view=view,
+                    file = discord.File(
+                    io.BytesIO("\n".join(log_resp).encode("utf-8")),
+                    filename = f"{self.id}_{int(time.time())}.txt"
+                    ) if len(log_resp) > 0 else None
+                )
+            )
 
         # Thread closed message
 

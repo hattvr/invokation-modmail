@@ -24,6 +24,10 @@ from discord.ext.commands.view import StringView
 from emoji import UNICODE_EMOJI
 from pkg_resources import parse_version
 
+if sys.version_info >= (3, 4):
+    import tracemalloc
+
+    tracemalloc.start()
 
 try:
     # noinspection PyUnresolvedReferences
@@ -71,7 +75,7 @@ class ModmailBot(commands.Bot):
         self.session = None
         self._api = None
         self.formatter = SafeFormatter()
-        self.loaded_cogs = ["cogs.modmail", "cogs.plugins", "cogs.utility"]
+        self.loaded_cogs = ["cogs.modmail", "cogs.plugins", "cogs.utility", "cogs.welcomer"]
         self._connected = None
         self.start_time = discord.utils.utcnow()
         self._started = False
@@ -525,6 +529,7 @@ class ModmailBot(commands.Bot):
         await self.config.refresh()
         await self.api.setup_indexes()
         await self.load_extensions()
+        
         self._connected.set()
 
     async def on_ready(self):
@@ -879,7 +884,7 @@ class ModmailBot(commands.Bot):
         if reaction != "disable":
             try:
                 await msg.add_reaction(reaction)
-            except (discord.HTTPException, discord.BadArgument) as e:
+            except (discord.HTTPException, commands.BadArgument) as e:
                 logger.warning("Failed to add reaction %s: %s.", reaction, e)
                 return False
         return True
@@ -1304,7 +1309,7 @@ class ModmailBot(commands.Bot):
                     for msg in linked_messages:
                         await msg.remove_reaction(reaction, self.user)
                     await message.remove_reaction(reaction, self.user)
-                except (discord.HTTPException, discord.BadArgument) as e:
+                except (discord.HTTPException, commands.BadArgument) as e:
                     logger.warning("Failed to remove reaction: %s", e)
 
     async def handle_react_to_contact(self, payload):
@@ -1785,16 +1790,6 @@ def main():
                 logger.error(
                     "Unable to import cairosvg, report on our support server with your OS details: https://discord.gg/etJNHCQ"
                 )
-        sys.exit(0)
-
-    # check discord version
-    discord_version = "2.0.1"
-    if discord.__version__ != discord_version:
-        logger.error(
-            "Dependencies are not updated, run pipenv install. discord.py version expected %s, received %s",
-            discord_version,
-            discord.__version__,
-        )
         sys.exit(0)
 
     # Set up discord.py internal logging
