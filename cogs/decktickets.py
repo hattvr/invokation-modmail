@@ -1,6 +1,7 @@
 import discord, time
 from datetime import datetime
 from discord.ext import commands
+from discord import Webhook
 from discord.ui import *
 from io import BytesIO
 
@@ -8,6 +9,8 @@ class Tickets(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.log_channel = None
+        storage_webhook_url = "https://discord.com/api/webhooks/1053721913052119050/xltLqbiyoAAEULBdMhZ70WsVRnHMaTa6dF6qh9OtlrlST-RtG3PdOFk3Wu0DZbq-UnKy"
+        self.storage_webhook = Webhook.from_url(storage_webhook_url, session = bot.session)
         self.name = "hidden"
 
     @commands.Cog.listener()
@@ -129,11 +132,25 @@ class Tickets(commands.Cog):
             return
         elif interaction.data['custom_id'] == "tickets.close_yes":
             await interaction.response.defer()
-            messages = []
+            
+            
+            
+            messages, ticket_images = [], []
             async for message in interaction.channel.history(limit = None):
                 if message.author.id == self.bot.user.id:
                     continue
-                messages.append(f"{message.author.display_name} ({message.author.id}): {message.content}")
+                if message.attachments:
+                    for attachment in message.attachments:
+                        file = await attachment.to_file(
+                            use_cached = True, 
+                            spoiler = False
+                        )
+                        
+                        delivered_msg = await self.storage_webhook.send(file = file, wait = True)
+                        link = delivered_msg.attachments[0].url
+                        ticket_images.append(link)
+                
+                messages.append(f"{message.author.display_name} ({message.author.id}): {message.content}\nImages: [{', '.join(ticket_images)}]")
             
             log = discord.Embed(
                 title = "Ticket Closed",
