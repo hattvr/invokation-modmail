@@ -228,7 +228,7 @@ class Thread:
             else:
                 footer = self.bot.config["thread_creation_footer"]
 
-            embed.set_footer(text=footer, icon_url=self.bot.guild.icon.url)
+            embed.set_footer(text=footer, icon_url=self.bot.get_guild_icon(guild=self.bot.modmail_guild))
             embed.title = self.bot.config["thread_creation_title"]
 
             if creator is None or creator == recipient:
@@ -537,7 +537,7 @@ class Thread:
 
         embed.description = message
         footer = self.bot.config["thread_close_footer"]
-        embed.set_footer(text=footer, icon_url=self.bot.guild.icon.url)
+        embed.set_footer(text=footer, icon_url=self.bot.get_guild_icon(guild=self.bot.guild))
 
         if not silent:
             for user in self.recipients:
@@ -973,7 +973,7 @@ class Thread:
                     name = tag
                 avatar_url = self.bot.config["anon_avatar_url"]
                 if avatar_url is None:
-                    avatar_url = self.bot.guild.icon.url
+                    avatar_url = self.bot.get_guild_icon(guild=self.bot.guild)
                 embed.set_author(
                     name=name,
                     icon_url=avatar_url,
@@ -1166,7 +1166,7 @@ class Thread:
                     additional_images = []
 
                 if embed.footer.text:
-                    plain_message = f"**({embed.footer.text}) "
+                    plain_message = f"**{embed.footer.text} "
                 else:
                     plain_message = "**"
                 plain_message += f"{embed.author.name}:** {embed.description}"
