@@ -51,8 +51,10 @@ class Tickets(commands.Cog):
             )
             
             response = discord.Embed(
-                title = "Genius Invokation TCG Support",
-                description = "Hello! Welcome to the official GITCG support, please provide some more details while you wait. A staff member will be with you shortly. <a:ayakafan:1049215569213272126>",
+                title = "Genius Invokation TCG Theorycrafting",
+                description = f"""
+**Please state the deck and characters you are submitting a guide for.**
+<:information:1034639378410115103> You do not have to submit your guide *immediately*, but opening a ticket and not saying anything will lead to its closure. <a:ayakafan:1049215569213272126>""",
                 color = 3092790
             )
             
