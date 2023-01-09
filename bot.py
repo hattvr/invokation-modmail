@@ -2,6 +2,7 @@ __version__ = "4.0.2"
 
 
 import asyncio
+import pymongo
 import copy
 import hashlib
 import logging
@@ -81,7 +82,7 @@ class ModmailBot(commands.Bot):
         self.session = None
         self._api = None
         self.formatter = SafeFormatter()
-        self.loaded_cogs = ["cogs.modmail", "cogs.plugins", "cogs.utility", "cogs.welcomer", "cogs.decktickets"]
+        self.loaded_cogs = ["cogs.modmail", "cogs.plugins", "cogs.utility", "cogs.welcomer", "cogs.decktickets", "cogs.custom_role"]
         self._connected = None
         self.start_time = discord.utils.utcnow()
         self._started = False
@@ -223,6 +224,11 @@ class ModmailBot(commands.Bot):
     def db(self):
         # deprecated
         return self.api.db
+
+    @property
+    def mongo(self):
+        # deprecated
+        return self.api.mongo
 
     async def get_prefix(self, message=None):
         return [self.prefix, f"<@{self.user.id}> ", f"<@!{self.user.id}> "]

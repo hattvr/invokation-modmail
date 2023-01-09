@@ -1,5 +1,7 @@
 import secrets
 import sys
+import pymongo
+
 from json import JSONDecodeError
 from typing import Any, Dict, Union, Optional
 
@@ -297,9 +299,10 @@ class ApiClient:
         The bot's current running `ClientSession`.
     """
 
-    def __init__(self, bot, db):
+    def __init__(self, bot, db, mongo):
         self.bot = bot
         self.db = db
+        self.mongo = mongo
         self.session = bot.session
 
     async def request(
@@ -446,6 +449,7 @@ class MongoDBClient(ApiClient):
 
         try:
             db = AsyncIOMotorClient(mongo_uri).modmail_bot
+            mongo = pymongo.MongoClient(mongo_uri).modmail_bot
         except ConfigurationError as e:
             logger.critical(
                 "Your MongoDB CONNECTION_URI might be copied wrong, try re-copying from the source again. "
@@ -454,7 +458,7 @@ class MongoDBClient(ApiClient):
             )
             sys.exit(0)
 
-        super().__init__(bot, db)
+        super().__init__(bot, db, mongo)
 
     async def setup_indexes(self):
         """Setup text indexes so we can use the $search operator"""
