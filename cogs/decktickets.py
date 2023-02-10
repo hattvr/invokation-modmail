@@ -34,7 +34,8 @@ class Tickets(commands.Cog):
                     interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
                     interaction.user: discord.PermissionOverwrite(read_messages=True),
                     interaction.guild.get_role(1016382872074068028): discord.PermissionOverwrite(read_messages=True),
-                    interaction.guild.get_role(1022936711417839657): discord.PermissionOverwrite(read_messages=True)
+                    interaction.guild.get_role(1022936711417839657): discord.PermissionOverwrite(read_messages=True),
+                    interaction.guild.get_role(1022936478449418240): discord.PermissionOverwrite(read_messages=True)
                 }
             )
             
